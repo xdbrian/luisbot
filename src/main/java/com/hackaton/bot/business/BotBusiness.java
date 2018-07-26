@@ -39,5 +39,12 @@ public class BotBusiness {
     return sendMessage;
   }
 
+  public SendMessage solicitarDocumentoIdentidad(SendMessage message, Update update) {
+    message = new SendMessage()
+            .setChatId(update.getMessage().getChatId())
+            .setText("Adicionalmente, será necesario que me indiques tu número de DNI por favor");
+    return message;
+  }
+
 
 }
