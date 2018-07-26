@@ -11,6 +11,8 @@ public class BotMemory {
 
   private String telephone;
 
+  private boolean dni = false;
+
 
   public boolean isInit() {
     return init;
@@ -26,5 +28,13 @@ public class BotMemory {
 
   public void setTelephone(String telephone) {
     this.telephone = telephone;
+  }
+
+  public boolean isDni() {
+    return dni;
+  }
+
+  public void setDni(boolean dni) {
+    this.dni = dni;
   }
 }
