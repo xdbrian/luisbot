@@ -1,17 +1,9 @@
 package com.hackaton.bot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hackaton.bot.business.BotBusiness;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.hackaton.bot.business.ConsultaDNI;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -23,11 +15,16 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
  *
  * @author lballena.
  */
-public class MyAmazingBot extends TelegramLongPollingBot {
+public class FlujoClienteBot extends TelegramLongPollingBot {
 
-  private BotBusiness botBusiness = new BotBusiness();
+  protected BotBusiness botBusiness = new BotBusiness();
 
-  private Map<Long, BotMemory> idChats = new HashMap();
+  protected Map<Long, BotMemory> idChats = new HashMap();
+
+
+  public FlujoClienteBot() {
+
+  }
 
   @Override
   public void onUpdateReceived(Update update) {
@@ -42,31 +39,9 @@ public class MyAmazingBot extends TelegramLongPollingBot {
       } else {
         BotMemory botMemory = idChats.get(update.getMessage().getChatId());
         if (StringUtils.isEmpty(botMemory.getTelephone())) {
-          message = botBusiness.pedirPermsisoCelular(message, update);
-        } else if (!botMemory.isDni()){
-          String dni = update.getMessage().getText();
-          System.out.println("---------------------------- DNI ?????? : " + dni);
-          String url = "http://192.168.43.188:8080/consultarDNI?dni="+dni;
-          RestTemplate restTemplate = new RestTemplate();
-          ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
-          String bodyResponse = response.getBody();
-          ObjectMapper mapper = new ObjectMapper();
-          ConsultaDNI consultaDNI = null;
-          try {
-            consultaDNI = mapper.readValue(bodyResponse.getBytes(), ConsultaDNI.class);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-          if(consultaDNI.getEstadoHTTP().equalsIgnoreCase("200")){
-            botMemory.setDni(true);
-            message = new SendMessage() // Create a SendMessage object with mandatory fields
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Su DNI ha sido reconocido como existente. ¿De qué manera lo puedo ayudar el día de hoy?");
-          } else {
-            message = new SendMessage() // Create a SendMessage object with mandatory fields
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Su DNI no existe o fue ingresado incorrectamente. Por favor, volver a ingresarlo.");
-          }
+          message = botBusiness.pedirPermsisoCelular(update);
+        } else if (!botMemory.isDni()) {
+          message = botBusiness.validarDocumentoIdentidad(botMemory,update);
         } else {
           message = new SendMessage() // Create a SendMessage object with mandatory fields
                   .setChatId(update.getMessage().getChatId())
@@ -78,8 +53,8 @@ public class MyAmazingBot extends TelegramLongPollingBot {
       System.out.println("---------------------> Telephone: -->" + update.getMessage().getContact()
               .getPhoneNumber());
       BotMemory botMemory = idChats.get(update.getMessage().getChatId());
-        message = botBusiness.solicitarDocumentoIdentidad(message, update);
-        executeMessage(message);
+      message = botBusiness.solicitarDocumentoIdentidad(update);
+      executeMessage(message);
       if (botMemory != null) {
         botMemory.setTelephone(update.getMessage().getContact().getPhoneNumber());
       }

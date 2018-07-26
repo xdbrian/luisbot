@@ -17,7 +17,7 @@ public class Application {
     TelegramBotsApi botsApi = new TelegramBotsApi();
 
     try {
-      botsApi.registerBot(new MyAmazingBot());
+      botsApi.registerBot(new FlujoClienteBot());
     } catch (TelegramApiException e) {
       e.printStackTrace();
     }
