@@ -14,9 +14,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
  */
 public class MyAmazingBot extends TelegramLongPollingBot {
 
-
-  @Autowired
-  Funtionary funtionary;
+  Funtionary funtionary = new Funtionary();
 
   @Override
   public void onUpdateReceived(Update update) {
