@@ -78,7 +78,7 @@ public class MyAmazingBot extends TelegramLongPollingBot {
         }
       }
       else if (message.getText().startsWith("/funtionary")) {
-       new Funtionary().getFuntionaryInfo(this,update);
+       new Funtionary().getFuntionaryInfo(this,message);
       }
 
 

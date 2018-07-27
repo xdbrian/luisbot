@@ -1,9 +1,12 @@
 package com.hackaton.bot;
 
 import com.hackaton.bot.Flow.Funtionary;
+import com.hackaton.bot.Flow.SelectProduct;
 import com.hackaton.bot.Flow.ShowService;
 import com.hackaton.bot.Flow.SoliciteAutenticationInitial;
+import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.Message;
 
 /**
  * ManagerFlow Description of class.
@@ -22,24 +25,28 @@ public class ManagerFlow {
   protected SoliciteAutenticationInitial soliciteAutenticationInitial = new
           SoliciteAutenticationInitial();
 
-  public void continueFlow(FlujoClienteBot flujoClienteBot, Update update) {
-    BotMemory botMemory = flujoClienteBot.idChats.get(update.getMessage().getChatId());
+  protected SelectProduct selectProduct = new SelectProduct();
+  public void continueFlow(FlujoClienteBot flujoClienteBot, Message messageRq) {
+    BotMemory botMemory = flujoClienteBot.idChats.get(messageRq.getChatId());
 
     switch (botMemory.getStepFlowsCross()) {
       case GUARDAR_INFORMACION_DEL_AGENTE:
-        funtionary.continueSaveFuntionary(flujoClienteBot, update);
+        funtionary.continueSaveFuntionary(flujoClienteBot, messageRq);
         break;
       case OFRECER_SERVICIOS:
-        funtionary.continueSaveFuntionary(flujoClienteBot, update);
+        funtionary.continueSaveFuntionary(flujoClienteBot, messageRq);
         break;
       case OFRECER_OTRA_COSA:
-        showService.continueFlowShowOtherThing(flujoClienteBot, update);
+        showService.continueFlowShowOtherThing(flujoClienteBot, messageRq);
         break;
       case AUTENTICACION_DEL_USUARIO:
-        soliciteAutenticationInitial.continueSoliciteInfoInitial(flujoClienteBot, update);
+        soliciteAutenticationInitial.continueSoliciteInfoInitial(flujoClienteBot, messageRq);
         break;
       case CHAT_USER_WHIT_AGENT:
 //TODO flujo por agregar
+        break;
+      case OBTENER_TASA_ACTUAL:
+        selectProduct.continueSelectProduct(flujoClienteBot, messageRq);
         break;
     }
   }

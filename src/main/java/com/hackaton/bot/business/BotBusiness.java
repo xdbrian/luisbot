@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -25,17 +26,21 @@ public class BotBusiness {
   private String urlHost = "http://192.168.43.188";
 
   public String saludar(Update update, String botUsername) {
-    return String.format("Hola %s %s, soy %s y he venido a ayudarte con tus tasas.",
+    return String.format("Hola %s %s, soy soy Trinity la asistente virtual de Zbank y estoy " +
+                    "aquí para ayudarte con la información que necesitas sobre tus tasas y asi " +
+                    "mejorar tu experiencia.",
             update.getMessage().getChat().getFirstName(),
             update.getMessage().getChat().getLastName(),
             botUsername);
   }
 
-  public SendMessage pedirPermsisoCelular(Update update) {
+  public SendMessage pedirPermsisoCelular(Message messageRq) {
+
     SendMessage sendMessage = new SendMessage()
-            .setChatId(update.getMessage().getChatId())
-            .setText("Disculpa, para poder brindarte un mejor servicio, favor de brindarme " +
-                    "permisos de tu celular");
+            .setChatId(messageRq.getChatId())
+            .setText("Para ello es necesario que pueda conocer tu número celular presionando el " +
+                    "siguiente botón:");
+
     KeyboardRow row = new KeyboardRow();
     KeyboardButton keyboardButton = new KeyboardButton("Enviar mi número telefonico");
     keyboardButton.setRequestContact(true);
@@ -49,10 +54,12 @@ public class BotBusiness {
     return sendMessage;
   }
 
-  public SendMessage solicitarDocumentoIdentidad( Update update) {
+  public SendMessage solicitarDocumentoIdentidad(Message messageRq) {
     SendMessage message = new SendMessage()
-            .setChatId(update.getMessage().getChatId())
-            .setText("Adicionalmente, será necesario que me indiques tu número de DNI por favor");
+            .setChatId(messageRq.getChatId())
+            .setText(String.format("Lo tengo! %s ahora necesito que ingreses el número de " +
+                    "doc. De identidad para identificarte.",messageRq.getChat()
+                    .getFirstName()));
     return message;
   }
 
@@ -89,6 +96,26 @@ public class BotBusiness {
       flujoClienteBot.executeMessage(message);
     }
     return false;
+  }
+
+
+  public void solicitarRuc(FlujoClienteBot flujoClienteBot,BotMemory botMemory, Message messageRq) {
+  SendMessage message = new SendMessage()
+            .setChatId(messageRq.getChatId())
+            .setText(String.format("Muy bien! %s ahora necesito que ingreses el RUC de la empresa" +
+                    " para validar que tasas tiene disponible la empresa.",messageRq
+                    .getChat()
+                    .getFirstName()));
+    flujoClienteBot.executeMessage(message);
+  }
+
+  public void respuestaSolicitarRuc(FlujoClienteBot flujoClienteBot,BotMemory botMemory, Message messageRq) {
+    SendMessage message = new SendMessage()
+            .setChatId(messageRq.getChatId())
+            .setText(String.format("Listo! se han validado los datos de tu empresa",messageRq
+                    .getChat()
+                    .getFirstName()));
+    flujoClienteBot.executeMessage(message);
   }
 
 

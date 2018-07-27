@@ -4,6 +4,7 @@ import com.hackaton.bot.BotMemory;
 import com.hackaton.bot.FlujoClienteBot;
 import com.hackaton.bot.NameStepFlows;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 
 /**
@@ -18,40 +19,39 @@ import org.telegram.telegrambots.api.objects.Update;
  */
 public class SoliciteAutenticationInitial {
 
-  public void initialSoliciteInfoInitial(FlujoClienteBot flujoClienteBot, Update update) {
-    BotMemory botMemory = flujoClienteBot.idChats.get(update.getMessage().getChatId());
+  public void initialSoliciteInfoInitial(FlujoClienteBot flujoClienteBot, Message messageRq) {
+    BotMemory botMemory = flujoClienteBot.idChats.get(messageRq.getChatId());
     botMemory.setStepFlowsCross(NameStepFlows.AUTENTICACION_DEL_USUARIO);
     botMemory.setStepFlowSoliciteInfoInitial(0);
-    continueSoliciteInfoInitial(flujoClienteBot, update);
+    continueSoliciteInfoInitial(flujoClienteBot, messageRq);
   }
 
-  public void continueSoliciteInfoInitial(FlujoClienteBot flujoClienteBot, Update update) {
-    BotMemory botMemory = flujoClienteBot.idChats.get(update.getMessage().getChatId());
+  public void continueSoliciteInfoInitial(FlujoClienteBot flujoClienteBot, Message messageRq) {
+    BotMemory botMemory = flujoClienteBot.idChats.get(messageRq.getChatId());
     SendMessage message = null;
     switch (botMemory.getStepFlowSoliciteInfoInitial()) {
       case 0:
-        message = FlujoClienteBot.botBusiness.pedirPermsisoCelular(update);
+        message = FlujoClienteBot.botBusiness.pedirPermsisoCelular(messageRq);
         botMemory.setStepFlowSoliciteInfoInitial(1);
         flujoClienteBot.executeMessage(message);
         break;
       case 1:
               if (botMemory != null) {
-                botMemory.setTelephone(update.getMessage().getContact().getPhoneNumber());
+                botMemory.setTelephone(messageRq.getContact().getPhoneNumber());
               }
         botMemory.setStepFlowSoliciteInfoInitial(2);
-        message = FlujoClienteBot.botBusiness.solicitarDocumentoIdentidad(update);
+        message = FlujoClienteBot.botBusiness.solicitarDocumentoIdentidad(messageRq);
         flujoClienteBot.executeMessage(message);
         break;
       case 2:
-        Boolean isCorrect = FlujoClienteBot.botBusiness.validarDocumentoIdentidad
-                (flujoClienteBot,botMemory,
-                update);
-
-        if(isCorrect) {
-          botMemory.setStepFlowSoliciteInfoInitial(0);
-          botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
-          flujoClienteBot.managerFlow.continueFlow(flujoClienteBot,update);
-        }
+        FlujoClienteBot.botBusiness.solicitarRuc(flujoClienteBot,botMemory, messageRq);
+        botMemory.setStepFlowSoliciteInfoInitial(3);
+        break;
+      case 3:
+        FlujoClienteBot.botBusiness.respuestaSolicitarRuc(flujoClienteBot,botMemory, messageRq);
+        botMemory.setStepFlowSoliciteInfoInitial(0);
+        botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
+        flujoClienteBot.managerFlow.continueFlow(flujoClienteBot,messageRq);
         break;
     }
   }

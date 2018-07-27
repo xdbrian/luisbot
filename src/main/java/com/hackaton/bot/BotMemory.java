@@ -21,6 +21,15 @@ public class BotMemory {
   //posicion del flujo actual del usuario
   private Integer stepFlowFuntionary = 0;
   private Integer stepFlowSoliciteInfoInitial = 0;
+  private Integer stepFlowStepSelectProduct = 0;
+
+  public Integer getStepFlowStepSelectProduct() {
+    return stepFlowStepSelectProduct;
+  }
+
+  public void setStepFlowStepSelectProduct(Integer stepFlowStepSelectProduct) {
+    this.stepFlowStepSelectProduct = stepFlowStepSelectProduct;
+  }
 
   public void initialCount(){
     Integer stepFlowFuntionary = 0;
