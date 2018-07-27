@@ -37,7 +37,7 @@ public class BotBusiness {
             .setText("Disculpa, para poder brindarte un mejor servicio, favor de brindarme " +
                     "permisos de tu celular");
     KeyboardRow row = new KeyboardRow();
-    KeyboardButton keyboardButton = new KeyboardButton("Enviar mi número telefonico");
+    KeyboardButton keyboardButton = new KeyboardButton("Enviar mi número telefónico");
     keyboardButton.setRequestContact(true);
     row.add(keyboardButton);
     ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();

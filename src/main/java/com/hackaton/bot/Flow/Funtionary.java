@@ -50,6 +50,7 @@ public class Funtionary {
         break;
       case 2:
         savePassword(flujoClienteBot,update);
+        botMemory.setFunctionary(true);
         botMemory.setStepFlowFuntionary(0);
         botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
         flujoClienteBot.managerFlow.continueFlow(flujoClienteBot,update);
@@ -78,11 +79,11 @@ public class Funtionary {
     String messageReturn = "";
     if (validateMatricula(update.getMessage().getText())) {
       this.matricula = update.getMessage().getText();
-      messageReturn = "\"La matrícula ha sido guardada \\nAhora Por favor ingresa tu clave\"";
+      messageReturn = "\"La matrícula ha sido guardada.\nAhora Por favor ingresa tu clave\"";
       isSaveFuntionary = false;
       isSavePassword = true;
     } else {
-      messageReturn = "el número de matrícula se encuentra en otro formato, por favor agregalo " +
+      messageReturn = "El número de matrícula se encuentra en otro formato, por favor agregalo " +
               "nuevamente";
     }
     SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
@@ -111,7 +112,7 @@ public class Funtionary {
     isSavePassword = false;
     SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
             .setChatId(update.getMessage().getChatId())
-            .setText("por favor ingresa tu matricula");
+            .setText("Por favor ingresa tu matricula");
     flujoClienteBot.executeMessage(sendMessage);
   }
 

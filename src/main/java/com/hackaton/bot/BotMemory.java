@@ -15,12 +15,20 @@ public class BotMemory {
 
   private boolean dni = false;
 
+  private Long chatId;
   //nombre del flujo en curso
   private NameStepFlows stepFlowsCross = NONE;
 
   //posicion del flujo actual del usuario
   private Integer stepFlowFuntionary = 0;
   private Integer stepFlowSoliciteInfoInitial = 0;
+
+  private boolean functionary;
+
+
+  public BotMemory(Long chatId) {
+    this.chatId = chatId;
+  }
 
   public void initialCount(){
     Integer stepFlowFuntionary = 0;
@@ -73,5 +81,21 @@ public class BotMemory {
 
   public void setDni(boolean dni) {
     this.dni = dni;
+  }
+
+  public boolean isFunctionary() {
+    return functionary;
+  }
+
+  public void setFunctionary(boolean functionary) {
+    this.functionary = functionary;
+  }
+
+  public Long getChatId() {
+    return chatId;
+  }
+
+  public void setChatId(Long chatId) {
+    this.chatId = chatId;
   }
 }

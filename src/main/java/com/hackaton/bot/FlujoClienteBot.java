@@ -4,7 +4,6 @@ import com.hackaton.bot.Flow.SoliciteAutenticationInitial;
 import com.hackaton.bot.business.BotBusiness;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.util.StringUtils;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -40,76 +39,43 @@ public class FlujoClienteBot extends TelegramLongPollingBot {
 
       if (botMemory == null) {
         System.out.println("---------------------> ChatId: -->" + update.getMessage().getChatId());
-        idChats.put(update.getMessage().getChatId(), new BotMemory());
+        idChats.put(update.getMessage().getChatId(), new BotMemory(update.getMessage().getChatId()));
         message = new SendMessage() // Create a SendMessage object with mandatory fields
                 .setChatId(update.getMessage().getChatId())
                 .setText(botBusiness.saludar(update, getBotUsername()));
         executeMessage(message);
-//      } else if (StringUtils.isEmpty(botMemory.getTelephone()) || !botMemory.isDni()) {
-
-        //  if (StringUtils.isEmpty(botMemory.getTelephone()))
-
-        //message = botBusiness.pedirPermsisoCelular(update);
 
         managerFlow.soliciteAutenticationInitial.initialSoliciteInfoInitial(this,update);
-      }
-//      } else if (!botMemory.isDni()) {
-//          botBusiness.validarDocumentoIdentidad(botMemory, update);
-//        }
-//        else {
-//          message = new SendMessage() // Create a SendMessage object with mandatory fields
-//                  .setChatId(update.getMessage().getChatId())
-//                  .setText(update.getMessage().getText());
-//        }
-
-      else if (update.getMessage().getText().startsWith("/soybcp")) {
+      } else if (update.getMessage().getText().startsWith("/soybcp")) {
         botMemory.setStepFlowsCross(NameStepFlows.GUARDAR_INFORMACION_DEL_AGENTE);
         managerFlow.funtionary.initFlowSaveFuntionary(this,update);
-        //conversationRestart(this,update);
       } else if (update.getMessage().getText().startsWith("/funtionary")) {
         managerFlow.funtionary.getFuntionaryInfo(this,update);
       } else if (update.getMessage().getText().startsWith("/chatWhitAgent")) {
         botMemory.setStepFlowsCross(NameStepFlows.CHAT_USER_WHIT_AGENT);
         managerFlow.funtionary.getFuntionaryInfo(this,update);
+      } else if (update.getMessage().getText().startsWith("/chatWhitAgent")) {
       }
       else {
         managerFlow.continueFlow(this, update);
       }
-
-
         //executeMessage(message);
       } else {
-
         managerFlow.continueFlow(this, update);
-
     }
 
-
-//    else {
-//      System.out.println("---------------------> Telephone: -->" + update.getMessage()
-//      .getContact()
-//              .getPhoneNumber());
-//      BotMemory botMemory = idChats.get(update.getMessage().getChatId());
-//      message = botBusiness.solicitarDocumentoIdentidad(update);
-//      executeMessage(message);
-//      if (botMemory != null) {
-//        botMemory.setTelephone(update.getMessage().getContact().getPhoneNumber());
-//      }
-//      message = removeKeyBoard(update);
-//      executeMessage(message);
-//    }
   }
 
 
   @Override
   public String getBotUsername() {
-    return "trinity21bot";
+    return "Luis21Bot";
   }
 
   @Override
   public String getBotToken() {
 
-    return "684560452:AAEiLnIqClLuOlC_KeGEwC8lVE7IbALecWE";
+    return "680599289:AAF9mRhmMiSWxyFjZqQIaREljaiWwtcDsXE";
   }
 
   public void executeMessage(SendMessage message) {
