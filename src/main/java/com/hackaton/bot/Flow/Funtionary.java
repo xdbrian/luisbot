@@ -1,8 +1,11 @@
-package com.hackaton.bot;
+package com.hackaton.bot.Flow;
 
+import com.hackaton.bot.BotMemory;
+
+import com.hackaton.bot.FlujoClienteBot;
+import com.hackaton.bot.NameStepFlows;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -30,7 +33,7 @@ public class Funtionary {
     BotMemory botMemory = flujoClienteBot.idChats.get(update.getMessage().getChatId());
     botMemory.setStepFlowsCross(NameStepFlows.GUARDAR_INFORMACION_DEL_AGENTE);
     botMemory.setStepFlowFuntionary(0);
-    continueSaveFuntionary(flujoClienteBot,update);
+    continueSaveFuntionary(flujoClienteBot, update);
   }
 
   public void continueSaveFuntionary(FlujoClienteBot flujoClienteBot, Update update) {
@@ -38,23 +41,24 @@ public class Funtionary {
 
     switch (botMemory.getStepFlowFuntionary()) {
       case 0:
-        this.initBcp(update);
+        this.initBcp(flujoClienteBot,update);
         botMemory.setStepFlowFuntionary(1);
         break;
       case 1:
-        saveFuntionary(update);
+        saveFuntionary(flujoClienteBot,update);
         botMemory.setStepFlowFuntionary(2);
         break;
-      case 3:
-        savePassword(update);
+      case 2:
+        savePassword(flujoClienteBot,update);
         botMemory.setStepFlowFuntionary(0);
-        botMemory.setStepFlowsCross(NameStepFlows.OFRECER_SERVICIOS);
+        botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
+        flujoClienteBot.managerFlow.continueFlow(flujoClienteBot,update);
         break;
     }
 
   }
 
-  public void getFuntionaryInfo (TelegramLongPollingBot telegramLongPollingBot, Update update){
+  public void getFuntionaryInfo(TelegramLongPollingBot telegramLongPollingBot, Update update) {
     SendPhoto msgPhoto = new SendPhoto()
             .setChatId(Long.toString(update.getMessage().getChat().getId()))
             .setPhoto("https://thumbs.dreamstime.com/b/d-security-agent-works-laptop-white-background-69375550.jpg")
@@ -70,58 +74,62 @@ public class Funtionary {
   }
 
 
-  public void saveFuntionary(Update update){
+  public void saveFuntionary(FlujoClienteBot flujoClienteBot, Update update) {
     String messageReturn = "";
-    if(validateMatricula(update.getMessage().getText())) {
+    if (validateMatricula(update.getMessage().getText())) {
       this.matricula = update.getMessage().getText();
-      messageReturn ="\"La matrícula ha sido guardada \\nAhora Por favor ingresa tu clave\"";
+      messageReturn = "\"La matrícula ha sido guardada \\nAhora Por favor ingresa tu clave\"";
       isSaveFuntionary = false;
       isSavePassword = true;
-    }else {
+    } else {
       messageReturn = "el número de matrícula se encuentra en otro formato, por favor agregalo " +
               "nuevamente";
     }
-    new SendMessage() // Create a SendMessage object with mandatory fields
+    SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
             .setChatId(update.getMessage().getChatId())
-          .setText(messageReturn);
+            .setText(messageReturn);
+    flujoClienteBot.executeMessage(sendMessage);
   }
 
   private boolean validateMatricula(String text) {
-    if(text.toCharArray()[0] != 'S'){
+    if (text.toCharArray()[0] != 'S') {
       return false;
     }
 
-    if(text.length()!= 6){
+    if (text.length() != 6) {
       return false;
     }
 
-    if(text.split(" ").length > 1){
+    if (text.split(" ").length > 1) {
       return false;
     }
-      return true;
+    return true;
   }
 
-  public void initBcp(Update update){
+  public void initBcp(FlujoClienteBot flujoClienteBot,Update update) {
     isSaveFuntionary = true;
     isSavePassword = false;
-    new SendMessage() // Create a SendMessage object with mandatory fields
+    SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
             .setChatId(update.getMessage().getChatId())
             .setText("por favor ingresa tu matricula");
+    flujoClienteBot.executeMessage(sendMessage);
   }
 
-  public void savePassword(Update update){
-    this.password =  update.getMessage().getText();
+  public void savePassword(FlujoClienteBot flujoClienteBot,Update update) {
+    this.password = update.getMessage().getText();
     isSavePassword = false;
     isSaveFuntionary = false;
-    new SendMessage() // Create a SendMessage object with mandatory fields
+    SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
             .setChatId(update.getMessage().getChatId())
             .setText("Tu información ha sido actualizada");
+    flujoClienteBot.executeMessage(sendMessage);
   }
+
   public String getMatricula() {
     return matricula;
   }
 
-  public void setMatricula(Update update,SendMessage message) {
+  public void setMatricula(Update update, SendMessage message) {
     this.matricula = update.getMessage().getText();
   }
 

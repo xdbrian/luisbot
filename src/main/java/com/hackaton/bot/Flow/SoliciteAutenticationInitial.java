@@ -3,6 +3,7 @@ package com.hackaton.bot.Flow;
 import com.hackaton.bot.BotMemory;
 import com.hackaton.bot.FlujoClienteBot;
 import com.hackaton.bot.NameStepFlows;
+import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
 /**
@@ -15,16 +16,43 @@ import org.telegram.telegrambots.api.objects.Update;
  * <u>Changes</u>:<br/><ul><li>27/07/2018 08:50(BTY) Creaci&oacute;n de Clase.</li></ul>
  * @version 1.0
  */
-public class SoliciteInfoInitial {
+public class SoliciteAutenticationInitial {
 
   public void initialSoliciteInfoInitial(FlujoClienteBot flujoClienteBot, Update update) {
     BotMemory botMemory = flujoClienteBot.idChats.get(update.getMessage().getChatId());
-    botMemory.setStepFlowsCross(NameStepFlows.GUARDAR_INFORMACION_DEL_AGENTE);
+    botMemory.setStepFlowsCross(NameStepFlows.AUTENTICACION_DEL_USUARIO);
     botMemory.setStepFlowSoliciteInfoInitial(0);
-    continueSoliciteInfoInitial(flujoClienteBot,update);
+    continueSoliciteInfoInitial(flujoClienteBot, update);
   }
 
   public void continueSoliciteInfoInitial(FlujoClienteBot flujoClienteBot, Update update) {
+    BotMemory botMemory = flujoClienteBot.idChats.get(update.getMessage().getChatId());
+    SendMessage message = null;
+    switch (botMemory.getStepFlowSoliciteInfoInitial()) {
+      case 0:
+        message = FlujoClienteBot.botBusiness.pedirPermsisoCelular(update);
+        botMemory.setStepFlowSoliciteInfoInitial(1);
+        flujoClienteBot.executeMessage(message);
+        break;
+      case 1:
+              if (botMemory != null) {
+                botMemory.setTelephone(update.getMessage().getContact().getPhoneNumber());
+              }
+        botMemory.setStepFlowSoliciteInfoInitial(2);
+        message = FlujoClienteBot.botBusiness.solicitarDocumentoIdentidad(update);
+        flujoClienteBot.executeMessage(message);
+        break;
+      case 2:
+        Boolean isCorrect = FlujoClienteBot.botBusiness.validarDocumentoIdentidad
+                (flujoClienteBot,botMemory,
+                update);
 
+        if(isCorrect) {
+          botMemory.setStepFlowSoliciteInfoInitial(0);
+          botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
+          flujoClienteBot.managerFlow.continueFlow(flujoClienteBot,update);
+        }
+        break;
+    }
   }
 }
