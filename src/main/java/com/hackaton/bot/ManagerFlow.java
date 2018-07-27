@@ -39,7 +39,7 @@ public class ManagerFlow {
         soliciteAutenticationInitial.continueSoliciteInfoInitial(flujoClienteBot, update);
         break;
       case CHAT_USER_WHIT_AGENT:
-
+//TODO flujo por agregar
         break;
     }
   }
