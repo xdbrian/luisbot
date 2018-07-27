@@ -113,6 +113,9 @@ public class FlujoClienteBot extends TelegramLongPollingBot {
       long chat_id = update.getCallbackQuery().getMessage().getChatId();
 
       if (call_data.equals("boton_tasa_actual")) {
+        BotMemory botMemory = idChats.get(chat_id);
+        botMemory.setStepFlowsCross(NameStepFlows.OBTENER_TASA_ACTUAL);
+        botMemory.setStepFlowStepSelectProduct(1);
         managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
 //        String answer = "Updated message text";
 //        EditMessageText new_message = new EditMessageText()
@@ -127,8 +130,41 @@ public class FlujoClienteBot extends TelegramLongPollingBot {
 //        }
       }else if (call_data.equals("boton_info_funcionario")) {
         managerFlow.funtionary.getFuntionaryInfo(this,update.getCallbackQuery().getMessage());
+      }else if (call_data.equals("boton_FEC_Local")) {
+        managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
+      }else if (call_data.equals("boton_FEC_Local_parametro_monto")) {
+        managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
+      }else if (call_data.equals("boton_FEC_Local_plazo_60")) {
+        managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
       }
+      else if (call_data.equals("boton_FEC_Local_plazo_90") || call_data.equals
+              ("boton_FEC_Local_plazo_60")) {
+        managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
+      }
+      else if (call_data.equals("boton_FEC_Local_plazo_180")) {
+        managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
+      }
+      else if (call_data.equals("boton_FEC_Local_plazo_otro_plazo")) {
+        managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
+      }
+      else if (call_data.equals("boton_acepto")) {
+        message = new SendMessage()
+                .setChatId(update.getCallbackQuery().getMessage().getChatId())
+                .setText(String.format(": ¡Excelente decisión Pedro! ¡Me alegra que confies en " +
+                        "nosotros! Tu tasa se actualizo a 7.4%  en el modulo d financiamiento " +
+                        "electrónico, ya puede realizar tus operaciones. Algo mas en lo que pueda" +
+                        " ayudarte?",update
+                        .getCallbackQuery
+                        ().getMessage()
+                        .getChat()
+                        .getFirstName()));
+        executeMessage(message);
+      }else if (call_data.equals("boton_no_acepto")) {
 
+        BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+        botMemory.setStepFlowsCross(NameStepFlows.NEGOCIAR_WHIT_FUNTIONARY);
+        managerFlow.continueFlow(this, update.getMessage());
+      }
 
 
 

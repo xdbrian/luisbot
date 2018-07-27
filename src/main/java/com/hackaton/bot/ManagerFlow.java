@@ -4,6 +4,7 @@ import com.hackaton.bot.Flow.Funtionary;
 import com.hackaton.bot.Flow.SelectProduct;
 import com.hackaton.bot.Flow.ShowService;
 import com.hackaton.bot.Flow.SoliciteAutenticationInitial;
+import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.Message;
@@ -28,7 +29,7 @@ public class ManagerFlow {
   protected SelectProduct selectProduct = new SelectProduct();
   public void continueFlow(FlujoClienteBot flujoClienteBot, Message messageRq) {
     BotMemory botMemory = flujoClienteBot.idChats.get(messageRq.getChatId());
-
+    SendMessage message = new SendMessage();
     switch (botMemory.getStepFlowsCross()) {
       case GUARDAR_INFORMACION_DEL_AGENTE:
         funtionary.continueSaveFuntionary(flujoClienteBot, messageRq);
@@ -43,10 +44,19 @@ public class ManagerFlow {
         soliciteAutenticationInitial.continueSoliciteInfoInitial(flujoClienteBot, messageRq);
         break;
       case CHAT_USER_WHIT_AGENT:
-//TODO flujo por agregar
+        message = new SendMessage()
+                .setChatId(messageRq.getChatId())
+                .setText("comunicando con");
+        flujoClienteBot.executeMessage(message);
         break;
       case OBTENER_TASA_ACTUAL:
         selectProduct.continueSelectProduct(flujoClienteBot, messageRq);
+        break;
+      case NEGOCIAR_WHIT_FUNTIONARY:
+        message = new SendMessage()
+                .setChatId(messageRq.getChatId())
+                .setText("comunicando con");
+        flujoClienteBot.executeMessage(message);
         break;
     }
   }

@@ -36,25 +36,45 @@ public class SelectProduct {
   public void continueSelectProduct(FlujoClienteBot flujoClienteBot, Message messageRq) {
     BotMemory botMemory = flujoClienteBot.idChats.get(messageRq.getChatId());
 
-    switch (botMemory.getStepFlowFuntionary()) {
+    switch (botMemory.getStepFlowStepSelectProduct()) {
       case 0:
-        this.stepSelectProduct(flujoClienteBot, messageRq);
-        botMemory.setStepFlowFuntionary(1);
+        this.stepSelectTasa(flujoClienteBot, messageRq);
+        botMemory.setStepFlowStepSelectProduct(1);
         break;
       case 1:
-        this.respuestaSeleccionarProducto(flujoClienteBot, messageRq);
+        this.seleccionarProducto(flujoClienteBot, messageRq);
         botMemory.setStepFlowFuntionary(2);
         break;
       case 2:
+        this.stepSolicitarMonto(flujoClienteBot, messageRq);
+        botMemory.setStepFlowStepSelectProduct(3);
+        break;
+//      case 3:
+//        this.stepSolicitarMonto(flujoClienteBot, messageRq);
+//        botMemory.setStepFlowStepSelectProduct(4);
+//        break;
+      case 3:
+        this.resspuestaSolicitarMonto(flujoClienteBot, messageRq);
+        botMemory.setStepFlowStepSelectProduct(4);
+        break;
+      case 4:
+        this.respuestaSeleccionPlazo(flujoClienteBot, messageRq);
+        botMemory.setStepFlowStepSelectProduct(5);
+        break;
+      case 5:
+        this.stepNegociar(flujoClienteBot, messageRq);
+        botMemory.setStepFlowStepSelectProduct(6);
+        break;
+      case 6:
         botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
-        botMemory.setStepFlowFuntionary(0);
+        botMemory.setStepFlowStepSelectProduct(0);
         flujoClienteBot.managerFlow.continueFlow(flujoClienteBot,messageRq);
         break;
     }
 
   }
 
-  public void stepSelectProduct(FlujoClienteBot flujoClienteBot, Message messageRq) {
+  public void stepSelectTasa(FlujoClienteBot flujoClienteBot, Message messageRq) {
     String message = "estas son las opciones de información que puedo ofrecerte:";
     SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
             .setChatId(messageRq.getChatId())
@@ -84,7 +104,7 @@ public class SelectProduct {
     flujoClienteBot.executeMessage(sendMessage);
   }
 
-  public void respuestaSeleccionarProducto(FlujoClienteBot flujoClienteBot, Message messageRq) {
+  public void seleccionarProducto(FlujoClienteBot flujoClienteBot, Message messageRq) {
     String message = "Para ver tu tasa actual selecciona el producto en el que se quiere " +
             "financiar:";
     SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
@@ -111,4 +131,98 @@ public class SelectProduct {
 
     flujoClienteBot.executeMessage(sendMessage);
   }
+
+
+  public void stepSolicitarMonto(FlujoClienteBot flujoClienteBot, Message messageRq) {
+    SendMessage message = new SendMessage()
+            .setChatId(messageRq.getChatId())
+            .setText(("Muy bien! ahora coloca el monto a financiar \n (ejemplo:1000.00)."));
+    flujoClienteBot.executeMessage(message);
+  }
+
+  public void resspuestaSolicitarMonto(FlujoClienteBot flujoClienteBot, Message messageRq) {
+    String message = "Excelente! solo te queda elegir el plazo:";
+    SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
+            .setChatId(messageRq.getChatId())
+            .setText(message);
+
+    InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+    List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+    List<InlineKeyboardButton> rowInline = new ArrayList<>();
+    rowInline.add(new InlineKeyboardButton().setText("Plazo de 60 días ").setCallbackData
+            ("boton_FEC_Local_plazo_60"));
+    rowInline.add(new InlineKeyboardButton().setText("Plazo de 90 días ").setCallbackData
+            ("boton_FEC_Local_plazo_90"));
+    rowInline.add(new InlineKeyboardButton().setText("Plazo de 180 días ").setCallbackData
+            ("boton_FEC_Local_plazo_180"));
+    rowInline.add(new InlineKeyboardButton().setText("Otro plazo").setCallbackData
+            ("boton_FEC_Local_plazo_otro_plazo"));
+    // Set the keyboard to the markup
+    rowsInline.add(rowInline);
+    // Add it to the message
+    markupInline.setKeyboard(rowsInline);
+    sendMessage.setReplyMarkup(markupInline);
+
+    flujoClienteBot.executeMessage(sendMessage);
+  }
+
+  public void respuestaSeleccionPlazo(FlujoClienteBot flujoClienteBot, Message messageRq) {
+    String message = "Las opciones de tasas tanto en Dólares como en Soles que te ofrecemos por " +
+            "ser nuestro cliente preferencial son:";
+    SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
+            .setChatId(messageRq.getChatId())
+            .setText(message);
+
+    InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+    List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+    List<InlineKeyboardButton> rowInline = new ArrayList<>();
+    rowInline.add(new InlineKeyboardButton().setText("Tasa en plazo de 90 días 7.5%(SOLES)")
+            .setCallbackData
+            ("boton_FEC_Local_plazo_tasa_soles_90"));
+
+    rowInline.add(new InlineKeyboardButton().setText("Tasa en plazo de 90 días 7.8%(DOLARES)")
+            .setCallbackData
+                    ("boton_FEC_Local_plazo_tasa_dolares_90"));
+    rowInline.add(new InlineKeyboardButton().setText("volver a cotizar")
+            .setCallbackData
+                    ("boton_FEC_Local_plazo_tasa_volver_a_cotizar"));
+
+
+    // Set the keyboard to the markup
+    rowsInline.add(rowInline);
+    // Add it to the message
+    markupInline.setKeyboard(rowsInline);
+    sendMessage.setReplyMarkup(markupInline);
+
+    flujoClienteBot.executeMessage(sendMessage);
+  }
+
+  public void stepNegociar(FlujoClienteBot flujoClienteBot, Message messageRq) {
+    String message = "Vaya! Parece que no te convenció la tasa que te ofrecí, no hay problema :";
+    SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
+            .setChatId(messageRq.getChatId())
+            .setText(message);
+
+    InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+    List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+    List<InlineKeyboardButton> rowInline = new ArrayList<>();
+    rowInline.add(new InlineKeyboardButton().setText("Acepto")
+            .setCallbackData
+                    ("boton_acepto"));
+
+    rowInline.add(new InlineKeyboardButton().setText("No acepto")
+            .setCallbackData
+                    ("boton_no_acepto"));
+
+
+
+    // Set the keyboard to the markup
+    rowsInline.add(rowInline);
+    // Add it to the message
+    markupInline.setKeyboard(rowsInline);
+    sendMessage.setReplyMarkup(markupInline);
+
+    flujoClienteBot.executeMessage(sendMessage);
+  }
+
 }
