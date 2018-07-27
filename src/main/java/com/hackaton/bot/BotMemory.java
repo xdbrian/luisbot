@@ -1,5 +1,7 @@
 package com.hackaton.bot;
 
+import com.hackaton.bot.business.ConsultaRUC;
+
 import static com.hackaton.bot.NameStepFlows.NONE;
 
 /**
@@ -23,6 +25,16 @@ public class BotMemory {
   private Integer stepFlowFuntionary = 0;
   private Integer stepFlowSoliciteInfoInitial = 0;
   private Integer stepFlowStepSelectProduct = 0;
+
+  private ConsultaRUC consultaRUC;
+
+  public ConsultaRUC getConsultaRUC() {
+    return consultaRUC;
+  }
+
+  public void setConsultaRUC(ConsultaRUC consultaRUC) {
+    this.consultaRUC = consultaRUC;
+  }
 
   public Integer getStepFlowStepSelectProduct() {
     return stepFlowStepSelectProduct;

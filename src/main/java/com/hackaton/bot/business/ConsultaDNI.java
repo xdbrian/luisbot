@@ -5,13 +5,23 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConsultaDNI {
 
-    String estadoHTTP;
+    Integer idUsuario;
 
-    public String getEstadoHTTP() {
-        return estadoHTTP;
+    Integer idEmpresa;
+
+    public Integer getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setEstadoHTTP(String estadoHTTP) {
-        this.estadoHTTP = estadoHTTP;
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 }

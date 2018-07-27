@@ -8,7 +8,8 @@ public enum NameStepFlows {
   GUARDAR_INFORMACION_DEL_AGENTE(3),
   CONSULTAR_INFORMACION_DEL_AGENTE(4),
   CHAT_USER_WHIT_AGENT(5),
-  OBTENER_TASA_ACTUAL(6);
+  OBTENER_TASA_ACTUAL(6),
+  PEDIR_RUC(7);
 
 
   int value;
@@ -21,13 +22,4 @@ public enum NameStepFlows {
     return value;
   }
 
-  public static NameStepFlows getEnum(int item){
-
-    for ( NameStepFlows nameStepFlows : NameStepFlows.values()){
-      if(nameStepFlows.getValue() == item){
-        return nameStepFlows;
-      }
-    }
-    return AUTENTICACION_DEL_USUARIO;
-  }
 }

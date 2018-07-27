@@ -43,7 +43,6 @@ public class ManagerFlow {
         soliciteAutenticationInitial.continueSoliciteInfoInitial(flujoClienteBot, messageRq);
         break;
       case CHAT_USER_WHIT_AGENT:
-//TODO flujo por agregar
         break;
       case OBTENER_TASA_ACTUAL:
         selectProduct.continueSelectProduct(flujoClienteBot, messageRq);
