@@ -68,6 +68,9 @@ public class FlujoClienteBot extends TelegramLongPollingBot {
         //conversationRestart(this,update);
       } else if (update.getMessage().getText().startsWith("/funtionary")) {
         managerFlow.funtionary.getFuntionaryInfo(this,update);
+      } else if (update.getMessage().getText().startsWith("/chatWhitAgent")) {
+        botMemory.setStepFlowsCross(NameStepFlows.CHAT_USER_WHIT_AGENT);
+        managerFlow.funtionary.getFuntionaryInfo(this,update);
       }
       else {
         managerFlow.continueFlow(this, update);
