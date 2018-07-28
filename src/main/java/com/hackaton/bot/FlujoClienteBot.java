@@ -26,6 +26,7 @@ import static java.lang.Math.toIntExact;
 public class FlujoClienteBot extends TelegramLongPollingBot {
 
 
+  public int contador= 0;
   public static BotBusiness botBusiness = new BotBusiness();
 
   public Map<Long, BotMemory> idChats = new HashMap();
@@ -130,40 +131,90 @@ public class FlujoClienteBot extends TelegramLongPollingBot {
 //        }
       }else if (call_data.equals("boton_info_funcionario")) {
         managerFlow.funtionary.getFuntionaryInfo(this,update.getCallbackQuery().getMessage());
+        BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+        botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
+        managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
       }else if (call_data.equals("boton_FEC_Local")) {
+        BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+        botMemory.setStepFlowStepSelectProduct(2);
         managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
       }else if (call_data.equals("boton_FEC_Local_parametro_monto")) {
         managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
       }else if (call_data.equals("boton_FEC_Local_plazo_60")) {
+        BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+        botMemory.setStepFlowStepSelectProduct(4);
         managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
       }
-      else if (call_data.equals("boton_FEC_Local_plazo_90") || call_data.equals
-              ("boton_FEC_Local_plazo_60")) {
+      else if (call_data.equals("boton_FEC_Local_plazo_90")) {
+
+//        BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+//        botMemory.setStepFlowStepSelectProduct(5);
+        BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+        botMemory.setStepFlowStepSelectProduct(4);
         managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
       }
       else if (call_data.equals("boton_FEC_Local_plazo_180")) {
+
         managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
       }
       else if (call_data.equals("boton_FEC_Local_plazo_otro_plazo")) {
+
         managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
       }
+
+      else if (call_data.equals("boton_FEC_Local_plazo_tasa_soles_90")) {
+                BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+        botMemory.setStepFlowStepSelectProduct(5);
+        managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
+      }
+
+      else if (call_data.equals("boton_FEC_Local_plazo_tasa_volver_a_cotizar")) {
+        BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+        botMemory.setStepFlowStepSelectProduct(5);
+        managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
+      }
+
+
+
+
       else if (call_data.equals("boton_acepto")) {
+
         message = new SendMessage()
                 .setChatId(update.getCallbackQuery().getMessage().getChatId())
-                .setText(String.format(": ¡Excelente decisión Pedro! ¡Me alegra que confies en " +
-                        "nosotros! Tu tasa se actualizo a 7.4%  en el modulo d financiamiento " +
-                        "electrónico, ya puede realizar tus operaciones. Algo mas en lo que pueda" +
-                        " ayudarte?",update
+                .setText((": ¡Excelente decisión "+update
                         .getCallbackQuery
-                        ().getMessage()
+                                ().getMessage()
                         .getChat()
-                        .getFirstName()));
+                        .getFirstName()+"! ¡Me alegra que confies en " +
+                        "nosotros! Tu tasa se actualizo a 7.4%  en el modulo de financiamiento " +
+                        "electrónico, ya puede realizar tus operaciones. Algo mas en lo que pueda" +
+                        " ayudarte?"));
         executeMessage(message);
-      }else if (call_data.equals("boton_no_acepto")) {
-
         BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
-        botMemory.setStepFlowsCross(NameStepFlows.NEGOCIAR_WHIT_FUNTIONARY);
+        botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
+        botMemory.setStepFlowStepSelectProduct(0);
         managerFlow.continueFlow(this, update.getMessage());
+
+
+      }else if (call_data.equals("boton_no_acepto")) {
+        if(contador<2){
+          BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+          botMemory.setStepFlowStepSelectProduct(4);
+          managerFlow.selectProduct.continueSelectProduct(this, update.getCallbackQuery().getMessage());
+          contador++;
+        }else {
+          BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
+          botMemory.setStepFlowsCross(NameStepFlows.NEGOCIAR_WHIT_FUNTIONARY);
+          message = new SendMessage()
+                  .setChatId(update.getCallbackQuery().getMessage().getChatId())
+                  .setText(("Por ser un cliente importante para la empresa tu funcioanrio " +
+                          "dedicado se comunicará pronto" +
+                          "pronto" +
+                          "."));
+          this.executeMessage(message);
+          managerFlow.continueFlow(this, update.getCallbackQuery().getMessage());
+
+        }
       }
 
 

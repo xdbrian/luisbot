@@ -179,16 +179,18 @@ public class SelectProduct {
     rowInline.add(new InlineKeyboardButton().setText("Tasa en plazo de 90 días 7.5%(SOLES)")
             .setCallbackData
             ("boton_FEC_Local_plazo_tasa_soles_90"));
-
+    rowsInline.add(rowInline);
+    rowInline = new ArrayList<>();
     rowInline.add(new InlineKeyboardButton().setText("Tasa en plazo de 90 días 7.8%(DOLARES)")
             .setCallbackData
-                    ("boton_FEC_Local_plazo_tasa_dolares_90"));
+                    ("boton_FEC_Local_plazo_tasa_soles_90"));
+    rowsInline.add(rowInline);
+    rowInline = new ArrayList<>();
     rowInline.add(new InlineKeyboardButton().setText("volver a cotizar")
             .setCallbackData
                     ("boton_FEC_Local_plazo_tasa_volver_a_cotizar"));
-
-
     // Set the keyboard to the markup
+
     rowsInline.add(rowInline);
     // Add it to the message
     markupInline.setKeyboard(rowsInline);
@@ -198,7 +200,8 @@ public class SelectProduct {
   }
 
   public void stepNegociar(FlujoClienteBot flujoClienteBot, Message messageRq) {
-    String message = "Vaya! Parece que no te convenció la tasa que te ofrecí, no hay problema :";
+    String message = "Bien! Parece que estas de acuerdo con la tasa proporcionada: sólo queda " +
+            "confirmar tu solicitud";
     SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
             .setChatId(messageRq.getChatId())
             .setText(message);
