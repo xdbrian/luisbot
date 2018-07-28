@@ -151,14 +151,24 @@ public class SelectProduct {
     List<InlineKeyboardButton> rowInline = new ArrayList<>();
     rowInline.add(new InlineKeyboardButton().setText("Plazo de 60 días ").setCallbackData
             ("boton_FEC_Local_plazo_60"));
+    rowsInline.add(rowInline);
+
+    rowInline = new ArrayList<>();
     rowInline.add(new InlineKeyboardButton().setText("Plazo de 90 días ").setCallbackData
             ("boton_FEC_Local_plazo_90"));
+    rowsInline.add(rowInline);
+
+    rowInline = new ArrayList<>();
     rowInline.add(new InlineKeyboardButton().setText("Plazo de 180 días ").setCallbackData
             ("boton_FEC_Local_plazo_180"));
+    rowsInline.add(rowInline);
+
+    rowInline = new ArrayList<>();
     rowInline.add(new InlineKeyboardButton().setText("Otro plazo").setCallbackData
             ("boton_FEC_Local_plazo_otro_plazo"));
-    // Set the keyboard to the markup
     rowsInline.add(rowInline);
+
+    // Set the keyboard to the markup
     // Add it to the message
     markupInline.setKeyboard(rowsInline);
     sendMessage.setReplyMarkup(markupInline);

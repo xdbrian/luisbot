@@ -193,7 +193,7 @@ public class FlujoClienteBot extends TelegramLongPollingBot {
         BotMemory botMemory = idChats.get(update.getCallbackQuery().getMessage().getChatId());
         botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
         botMemory.setStepFlowStepSelectProduct(0);
-        managerFlow.continueFlow(this, update.getMessage());
+        managerFlow.continueFlow(this, update.getCallbackQuery().getMessage());
 
 
       }else if (call_data.equals("boton_no_acepto")) {
@@ -207,10 +207,8 @@ public class FlujoClienteBot extends TelegramLongPollingBot {
           botMemory.setStepFlowsCross(NameStepFlows.NEGOCIAR_WHIT_FUNTIONARY);
           message = new SendMessage()
                   .setChatId(update.getCallbackQuery().getMessage().getChatId())
-                  .setText(("Por ser un cliente importante para la empresa tu funcioanrio " +
-                          "dedicado se comunicará pronto" +
-                          "pronto" +
-                          "."));
+                  .setText(("Por ser un cliente importante para la empresa te referiremos de " +
+                          "inmediato con un funcionario."));
           this.executeMessage(message);
           managerFlow.continueFlow(this, update.getCallbackQuery().getMessage());
 
