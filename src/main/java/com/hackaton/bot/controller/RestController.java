@@ -16,7 +16,7 @@ public class RestController {
     }
 
     public Object saveTasa() {
-        String url = String.format("%s:8080/save",urlHost);
+        String url = String.format("%s:8080/nuevaTasa",urlHost);
         RestTemplate restTemplate = new RestTemplate();
         //ResponseEntity<String> response = restTemplate.postForObject(url, "",String.class);
         return null;

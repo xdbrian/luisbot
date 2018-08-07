@@ -53,10 +53,19 @@ public class ManagerFlow {
         selectProduct.continueSelectProduct(flujoClienteBot, messageRq);
         break;
       case NEGOCIAR_WHIT_FUNTIONARY:
-        message = new SendMessage()
-                .setChatId(messageRq.getChatId())
-                .setText("comunicando con");
-        flujoClienteBot.executeMessage(message);
+        BotMemory funcionario = flujoClienteBot.idChats.values().stream().filter(t->t.isFunctionary() ).findFirst().orElse(null);
+        if(funcionario == null){
+          message = new SendMessage()
+                  .setChatId(messageRq.getChatId())
+                  .setText("Estamos comunicandonos con un funcionario, favor de intentar en 5 sgeundos.");
+          flujoClienteBot.executeMessage(message);
+        }else {
+          message = new SendMessage()
+                  .setChatId(funcionario.getChatId())
+                  .setText(String.format("Estimado funcionario, un cliente ha hecho la siguiente consulta : \"%s\"",messageRq.getText()));
+          funcionario.setChatIdCliente(messageRq.getChatId());
+          flujoClienteBot.executeMessage(message);
+        }
         break;
     }
   }

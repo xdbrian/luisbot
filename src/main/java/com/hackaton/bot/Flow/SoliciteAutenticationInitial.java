@@ -60,6 +60,7 @@ public class SoliciteAutenticationInitial {
                         (flujoClienteBot, botMemory, messageRq.getText());
                 if (isCorrectRuc) {
                     botMemory.setStepFlowSoliciteInfoInitial(5);
+                    botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
                 }else {
                     botMemory.setStepFlowSoliciteInfoInitial(4);
                 }

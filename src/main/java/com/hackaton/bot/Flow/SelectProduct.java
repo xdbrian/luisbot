@@ -26,12 +26,6 @@ import static com.hackaton.bot.NameStepFlows.OBTENER_TASA_ACTUAL;
  */
 public class SelectProduct {
 
-  public void initSelectProduct(FlujoClienteBot flujoClienteBot, Message messageRq) {
-    BotMemory botMemory = flujoClienteBot.idChats.get(messageRq.getChatId());
-    botMemory.setStepFlowStepSelectProduct(0);
-    botMemory.setStepFlowsCross(OBTENER_TASA_ACTUAL);
-    continueSelectProduct(flujoClienteBot,messageRq);
-  }
 
   public void continueSelectProduct(FlujoClienteBot flujoClienteBot, Message messageRq) {
     BotMemory botMemory = flujoClienteBot.idChats.get(messageRq.getChatId());
@@ -177,6 +171,7 @@ public class SelectProduct {
   }
 
   public void respuestaSeleccionPlazo(FlujoClienteBot flujoClienteBot, Message messageRq) {
+    BotMemory botMemory = flujoClienteBot.idChats.get(messageRq.getChatId());
     String message = "Las opciones de tasas tanto en Dólares como en Soles que te ofrecemos por " +
             "ser nuestro cliente preferencial son:";
     SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
@@ -186,12 +181,12 @@ public class SelectProduct {
     InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
     List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
     List<InlineKeyboardButton> rowInline = new ArrayList<>();
-    rowInline.add(new InlineKeyboardButton().setText("Tasa en plazo de 90 días 7.5%(SOLES)")
+    rowInline.add(new InlineKeyboardButton().setText(String.format("Tasa en plazo de 90 días %2.2f%%(SOLES)",botMemory.getTasaSoles()))
             .setCallbackData
             ("boton_FEC_Local_plazo_tasa_soles_90"));
     rowsInline.add(rowInline);
     rowInline = new ArrayList<>();
-    rowInline.add(new InlineKeyboardButton().setText("Tasa en plazo de 90 días 7.8%(DOLARES)")
+    rowInline.add(new InlineKeyboardButton().setText(String.format("Tasa en plazo de 90 días %2.2f%%(DOLARES)",botMemory.getTasaDolares()))
             .setCallbackData
                     ("boton_FEC_Local_plazo_tasa_soles_90"));
     rowsInline.add(rowInline);

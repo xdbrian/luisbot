@@ -43,17 +43,26 @@ public class Funtionary {
     switch (botMemory.getStepFlowFuntionary()) {
       case 0:
         this.initBcp(flujoClienteBot,messageRq);
+        botMemory.setStepFlowsCross(NameStepFlows.GUARDAR_INFORMACION_DEL_AGENTE);
         botMemory.setStepFlowFuntionary(1);
         break;
       case 1:
+        botMemory.setStepFlowsCross(NameStepFlows.GUARDAR_INFORMACION_DEL_AGENTE);
         saveFuntionary(flujoClienteBot,messageRq);
         botMemory.setStepFlowFuntionary(2);
         break;
       case 2:
         savePassword(flujoClienteBot,messageRq);
-        botMemory.setStepFlowFuntionary(0);
-        botMemory.setStepFlowsCross(NameStepFlows.OFRECER_OTRA_COSA);
-        flujoClienteBot.managerFlow.continueFlow(flujoClienteBot,messageRq);
+        botMemory.setFunctionary(true);
+        botMemory.setStepFlowFuntionary(3);
+        break;
+      case 3:
+        if(botMemory.getChatIdCliente() != null){
+          SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
+                  .setChatId(botMemory.getChatIdCliente())
+                  .setText(messageRq.getText());
+          flujoClienteBot.executeMessage(sendMessage);
+        }
         break;
     }
 
@@ -93,17 +102,6 @@ public class Funtionary {
   }
 
   private boolean validateMatricula(String text) {
-    if (text.toCharArray()[0] != 'S') {
-      return false;
-    }
-
-    if (text.length() != 6) {
-      return false;
-    }
-
-    if (text.split(" ").length > 1) {
-      return false;
-    }
     return true;
   }
 
@@ -122,7 +120,7 @@ public class Funtionary {
     isSaveFuntionary = false;
     SendMessage sendMessage = new SendMessage() // Create a SendMessage object with mandatory fields
             .setChatId(messageRq.getChatId())
-            .setText("Tu información ha sido actualizada");
+            .setText("Tu información ha sido actualizada, favor de esperar que tengamos respuesta de un cliente");
     flujoClienteBot.executeMessage(sendMessage);
   }
 
